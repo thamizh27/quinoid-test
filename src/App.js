@@ -1,25 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Data from "./components/Data";
+import Loader from "./components/Loader";
+import Form from "./components/Form";
 
-function App() {
+const App = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("Asia");
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`https://restcountries.eu/rest/v2/region/${query}`)
+      .then((res) => res.json())
+      .then((data) => setData(data));
+
+    setLoading(false);
+  }, [query]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Form submitedValue={(item) => setQuery(item)} />
+      {loading ? <Loader /> : <Data data={data} />}
     </div>
   );
-}
+};
 
 export default App;
